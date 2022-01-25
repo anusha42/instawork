@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <h1>{{title}}</h1>
+    <t3>You have {{num_members}} team members</t3>
+    <a class="btn btn-primary" href="/addUser">Add</a>
+
+    <table id="tableId">
+        <tbody>
+        {% for user in user_list%}
+        <tr onclick="myFunction(this)">
+          <td><strong> Name: {{user.firstName}}   {{user.lastName}} </strong></td> <td>{{user.role}}</td></td>
+          <td>Phone: {{user.phone}}</td>
+          <td>{{user.email}}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <script>
+      function myFunction(x) {
+          var table = document.getElementById("tableId");
+          var rows = table.getElementsByTagName("tr");
+
+          // #alert("Edit Team Member " + x.children("td"));
+          for (i = 0; i < rows.length; i++) {
+            var currentRow = table.rows[i];
+            var createClickHandler = 
+              function(row) 
+              {
+                return function() { 
+                  var cell = row.getElementsByTagName("td")[3];
+                  var id = cell.innerHTML;
+                  alert("email:" + id);
+                  location.href = "/editUser/";
+                };
+              };
+        currentRow.onclick = createClickHandler(currentRow);
+          }   
+        window.onload = addRowHandlers();
+    }
+    </script>
+
+  </body>
+</html>
