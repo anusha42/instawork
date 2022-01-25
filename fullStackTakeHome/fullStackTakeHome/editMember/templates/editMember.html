@@ -24,7 +24,9 @@
             {% csrf_token %}
             {{form_user}}
             <!-- <button name = "edit" type="submit" formaction = "/home/"> Edit</button> -->
-            <button type="submit" formmethod="post">Submit using POST</button>
+            <button type="submit" name="edit" value="edit" formmethod="post">Edit</button>
+
+            <button type="submit" name="delete" value="delete" formmethod="post">Delete</button>
             <!-- <a href="http://127.0.0.1:8000/editUser/">EDIT!</a> -->
         </fieldset>
     </form>

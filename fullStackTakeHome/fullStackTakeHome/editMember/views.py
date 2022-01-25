@@ -10,37 +10,31 @@ from .models import EditUsers as EditUsersModel
 from .forms import EditUserForm
 from addMember.forms import UserForm
 
-def editMemberEntry(request, pk): 
-        instance = get_object_or_404(UsersModel, email = pk)
-        print(instance.firstName)
-        if request.method == 'POST': 
-            print("ITS A POST")
-            form = EditUserForm(request.POST, instance = instance)
-            if form.is_valid():
-                form.save()
-        elif request.method == 'GET':
-            print("in editMemberEntry - GET")
-            t = UsersModel.objects.get(email='a@s.com')
-            form = EditUserForm(request.GET, instance = instance)
-            t.firstName = request.GET.get('firstName')
-            print(t.firstName)
-            t.save()
-        else:
-            print('not a post')
-            print(request.method)
-            form = EditUserForm(request.POST, instance = instance)
 
 class EditView(View):
 
     template_name = 'editMember.html'
 
-    def get(self, request):
+    def get(self, request, email):
+        print(email)
+        inputUser = UsersModel.objects.get(email=email)
+
+        user_data = {
+            'firstName': inputUser.firstName,
+            'lastName':  inputUser.lastName,
+            'email':  email,
+            'phone':  inputUser.phone,
+            'role': inputUser.role
+        }
+
         user_list = []
-        form_user = EditUserForm()
+        form_user = EditUserForm(initial = user_data)
         users = UsersModel.objects.all()[:50]
 
         for user in users:
             user_list.append(user.email)
+
+        
 
 
         # #THIS ACTUALLY UPDATES THE DATABASE
@@ -60,16 +54,20 @@ class EditView(View):
             'form_user': form_user
         })
 
-    def post(self, request):
+    def post(self, request, email):
         print("IN A POST")
         form_user = UserForm(request.POST)
         if form_user.is_valid():
-            
             return HttpResponseRedirect('/home/')
-        else:
-            print('not valid')
-            t = UsersModel.objects.get(email='a@s.com')
-            
+
+        elif request.POST.get('delete'):
+            UsersModel.objects.filter(email=email).delete()
+            return HttpResponseRedirect('/home/')
+            print('DELEting')
+        elif request.POST.get('edit'):
+            print('IN EDIT')
+            t = UsersModel.objects.get(email=request.POST.get('email'))
+
             t.firstName = request.POST.get('firstName')
             t.lastName = request.POST.get('lastName')
             t.phone = request.POST.get('phone')
@@ -77,5 +75,8 @@ class EditView(View):
 
             t.save()
             return HttpResponseRedirect('/home/')
+        else:
+            print('extra case')
+            return HttpResponseRedirect('/editUser/')
 
     

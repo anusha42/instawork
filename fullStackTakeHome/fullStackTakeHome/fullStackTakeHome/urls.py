@@ -23,5 +23,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('addUser/', UsersView.as_view()),
     path('home/', ListView.as_view()),
-    path('editUser/', EditView.as_view()),
+    path('editUser/<email>/', EditView.as_view()),
 ]
